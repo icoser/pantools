@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PanTools V7.0 - 专业工具解决方案</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 头部样式 */
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            background: #fff;
+            color: #1e3c72;
+        }
+
+        /* 汉堡菜单按钮 */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #fff;
+            margin: 3px 0;
+            transition: 0.3s;
+            border-radius: 2px;
+        }
+
+        /* 汉堡菜单激活状态 */
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+
+        /* 主内容区域 */
+        .hero {
+            padding: 140px 0 80px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .software-image {
+            text-align: center;
+            max-width: 100%;
+        }
+
+        .software-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .software-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            max-width: 100%;
+        }
+
+        .software-info h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #4fc3f7;
+        }
+
+        .info-item {
+            margin: 1rem 0;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: #4fc3f7;
+            color: #fff;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: background 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .download-btn:hover {
+            background: #29b6f6;
+        }
+
+        /* 新增内容样式 */
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #4fc3f7;
+        }
+
+        /* 功能区域样式 */
+        .features {
+            padding: 80px 0;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card h3 {
+            color: #4fc3f7;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        /* 教程区域样式 */
+        .tutorials {
+            padding: 80px 0;
+        }
+
+        .tutorials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .tutorial-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .tutorial-card h3 {
+            color: #4fc3f7;
+            margin-bottom: 1rem;
+        }
+
+        .watch-btn {
+            display: inline-block;
+            background: #ff6b6b;
+            color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 20px;
+            margin-top: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .watch-btn:hover {
+            background: #ff5252;
+        }
+
+        /* B站区域样式 */
+        .bilibili-section {
+            padding: 80px 0;
+            background: rgba(255, 255, 255, 0.05);
+            text-align: center;
+        }
+
+        .bilibili-content p {
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+        }
+
+        .bilibili-btn {
+            display: inline-block;
+            background: #00a1d6;
+            color: #fff;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+
+        .bilibili-btn:hover {
+            background: #0092c4;
+        }
+
+        /* 赞助区域样式 */
+        .sponsor {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .sponsor-content p {
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+        }
+
+        .sponsor-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+
+        .sponsor-method {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .sponsor-method h4 {
+            color: #4fc3f7;
+            margin-bottom: 1rem;
+        }
+
+        .sponsor-method img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        /* 新版时间轴样式 - 基于用户提供的模板 */
+        .changelog {
+            padding: 80px 0;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .timeline-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .timeline-container:before {
+            content: '';
+            position: fixed;
+            top: 0px;
+            left: 50%;
+            bottom: 0px;
+            transform: translateX(-50%);
+            width: 6px;
+            background-color: #4fc3f7;
+            z-index: 1;
+        }
+
+        .entries {
+            width: calc(100% - 80px);
+            max-width: 800px;
+            margin: auto;
+            position: relative;
+            left: -5px;
+        }
+
+        .entry {
+            width: calc(50% - 80px);
+            float: left;
+            padding: 20px;
+            clear: both;
+            text-align: right;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .entry:not(:first-child) {
+            margin-top: -60px;
+        }
+
+        .title {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            position: relative;
+            color: #4fc3f7;
+            font-weight: bold;
+            padding: 8px 12px;
+            background: rgba(79, 195, 247, 0.2);
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .title:before {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border: 4px solid #4fc3f7;
+            background-color: #1e3c72;
+            border-radius: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            right: -58px;
+            z-index: 1000;
+        }
+
+        .title.big:before {
+            width: 20px;
+            height: 20px;
+            transform: translate(8px, -50%);
+        }
+
+        .body {
+            color: #fff;
+        }
+
+        .body p {
+            line-height: 1.6em;
+            margin: 0.5rem 0;
+        }
+
+        .entry:nth-child(2n) {
+            text-align: left;
+            float: right;
+        }
+
+        .entry:nth-child(2n) .title:before {
+            left: -58px;
+            right: auto;
+        }
+
+        .entry:nth-child(2n) .title.big:before {
+            transform: translate(-8px, -50%);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .nav-menu {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                background: rgba(30, 60, 114, 0.95);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                padding: 2rem;
+                transition: left 0.3s ease;
+                gap: 1rem;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .nav-menu a {
+                padding: 12px 20px;
+                text-align: center;
+                border-radius: 25px;
+            }
+
+            .nav-menu a:hover {
+                background: #fff;
+                color: #1e3c72;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .header-content {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .features-grid,
+            .tutorials-grid,
+            .sponsor-methods {
+                grid-template-columns: 1fr;
+            }
+
+            .software-info,
+            .feature-card,
+            .tutorial-card,
+            .sponsor-method {
+                padding: 1.5rem;
+            }
+
+            .hero {
+                padding: 120px 0 60px;
+            }
+
+            /* 移动端时间轴样式 */
+            .timeline-container:before {
+                left: 20px;
+            }
+
+            .entries {
+                width: calc(100% - 40px);
+                left: 0;
+            }
+
+            .entry {
+                width: calc(100% - 60px);
+                float: none;
+                text-align: left;
+                margin: 0 0 20px 40px;
+            }
+
+            .entry:nth-child(2n) {
+                text-align: left;
+                float: none;
+                margin: 0 0 20px 40px;
+            }
+
+            .title:before {
+                left: -44px;
+                right: auto;
+            }
+
+            .entry:nth-child(2n) .title:before {
+                left: -44px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .nav-menu {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .software-info h1 {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .entry {
+                width: calc(100% - 40px);
+                margin: 0 0 20px 20px;
+                padding: 15px;
+            }
+
+            .title:before {
+                left: -34px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <a href="#" class="logo">PanTools</a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="#home">主页</a></li>
+                    <li><a href="#features">软件功能</a></li>
+                    <li><a href="#tutorials">视频教程</a></li>
+                    <li><a href="#bilibili">bilibili</a></li>
+                    <li><a href="#sponsor">赞助作者</a></li>
+                    <li><a href="#changelog">更新历史</a></li>
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero" id="home">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="software-image">
+                        <img src="index.jpg" alt="PanTools V7.0 软件界面" id="software-screenshot" style="cursor: pointer;">
+                    </div>
+                    <div class="software-info">
+                        <h1>PanTools V7.0</h1>
+                        <div class="info-item">
+                            <strong>软件名称：</strong>PanTools V7.0
+                        </div>
+                        <div class="info-item">
+                            <strong>文件大小：</strong>15.8 MB
+                        </div>
+                        <div class="info-item">
+                            <strong>MD5校验：</strong>a1b2c3d4e5f678901234567890123456
+                        </div>
+                        <div class="info-item">
+                            <strong>更新日期：</strong>2024-12-20
+                        </div>
+                        <div class="info-item">
+                            <strong>支持系统：</strong>Windows 10/11
+                        </div>
+                        <a href="#" class="download-btn">立即下载</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 软件功能区域 -->
+        <section class="features" id="features">
+            <div class="container">
+                <h2 class="section-title">软件功能特点</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h3>高效处理</h3>
+                        <p>支持批量处理，大幅提升工作效率，节省宝贵时间</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>智能分析</h3>
+                        <p>内置AI算法，自动识别和分析数据，提供智能建议</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>安全可靠</h3>
+                        <p>多重加密保护，确保数据安全，防止信息泄露</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>用户友好</h3>
+                        <p>简洁直观的界面设计，操作简单易上手</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 视频教程区域 -->
+        <section class="tutorials" id="tutorials">
+            <div class="container">
+                <h2 class="section-title">视频教程</h2>
+                <div class="tutorials-grid">
+                    <div class="tutorial-card">
+                        <h3>入门教程</h3>
+                        <p>快速上手，10分钟掌握基本操作</p>
+                        <a href="#" class="watch-btn">观看视频</a>
+                    </div>
+                    <div class="tutorial-card">
+                        <h3>高级功能</h3>
+                        <p>深度解析软件的高级特性和技巧</p>
+                        <a href="#" class="watch-btn">观看视频</a>
+                    </div>
+                    <div class="tutorial-card">
+                        <h3>实战案例</h3>
+                        <p>真实场景应用演示，解决实际问题</p>
+                        <a href="#" class="watch-btn">观看视频</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- B站链接区域 -->
+        <section class="bilibili-section" id="bilibili">
+            <div class="container">
+                <h2 class="section-title">B站频道</h2>
+                <div class="bilibili-content">
+                    <p>关注我们的B站频道，获取最新教程和更新动态</p>
+                    <a href="#" class="bilibili-btn">前往B站</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 赞助区域 -->
+        <section class="sponsor" id="sponsor">
+            <div class="container">
+                <h2 class="section-title">赞助作者</h2>
+                <div class="sponsor-content">
+                    <p>您的支持是我们持续更新的动力</p>
+                    <div class="sponsor-methods">
+                        <div class="sponsor-method">
+                            <h4>微信赞赏</h4>
+                            <img src="wx.jpg" alt="微信赞赏码">
+                        </div>
+                        <div class="sponsor-method">
+                            <h4>支付宝</h4>
+                            <img src="zfb.jpg" alt="支付宝收款码">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 更新历史区域 -->
+        <section class="changelog" id="changelog">
+            <div class="container">
+                <h2 class="section-title">更新历史</h2>
+                <div class="timeline-container">
+                    <div class="entries">
+                        <div class="entry">
+                            <div class="title">2025-8-26</div>
+                            <div class="body">
+                                <p>修复监控判断重复逻辑</p>
+                                <p>修复独立文件夹转存逻辑</p>
+                            </div>
+                        </div>
+                        <div class="entry">
+                            <div class="title big">2025-8-10</div>
+                            <div class="body">
+                                <p>PanTools V7.0 正式发布</p>
+                                <p>包含所有核心功能</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚区域 -->
+    <footer style="background: rgba(255, 255, 255, 0.1); padding: 2rem 0; text-align: center; backdrop-filter: blur(10px);">
+        <div class="container">
+            <div style="margin-bottom: 1rem;">
+                <a href="#" class="logo" style="font-size: 1.5rem;">PanTools</a>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <p style="color: #fff; opacity: 0.8;">专业工具解决方案 - 让工作更高效</p>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <a href="#" class="modal-link" data-modal="privacy" style="color: #4fc3f7; text-decoration: none; margin: 0 10px; cursor: pointer;">隐私政策</a>
+                <a href="#" class="modal-link" data-modal="terms" style="color: #4fc3f7; text-decoration: none; margin: 0 10px; cursor: pointer;">使用条款</a>
+                <a href="#" class="modal-link" data-modal="contact" style="color: #4fc3f7; text-decoration: none; margin: 0 10px; cursor: pointer;">联系我们</a>
+            </div>
+            <div>
+                <p style="color: #fff; opacity: 0.6; font-size: 0.9rem;">© 2024 PanTools. 保留所有权利。</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 模态框结构 -->
+    <div id="modal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); z-index: 3000; justify-content: center; align-items: center;">
+        <div class="modal-content" style="background: rgba(30, 60, 114, 0.95); padding: 2rem; border-radius: 15px; max-width: 500px; width: 90%; backdrop-filter: blur(10px); position: relative;">
+            <span class="close-modal" style="position: absolute; top: 10px; right: 15px; font-size: 1.5rem; color: #fff; cursor: pointer; font-weight: bold;">&times;</span>
+            <h2 id="modal-title" style="color: #4fc3f7; margin-bottom: 1rem;"></h2>
+            <div id="modal-body" style="color: #fff; line-height: 1.6;"></div>
+        </div>
+    </div>
+
+    <script>
+        // 汉堡菜单功能
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        // 点击菜单项后关闭菜单
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // 点击页面其他区域关闭菜单
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.nav-menu') && !e.target.closest('.hamburger')) {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            }
+        });
+
+        // 防止菜单点击事件冒泡
+        navMenu.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // 页脚链接模态框功能
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalBody = document.getElementById('modal-body');
+        const closeModal = document.querySelector('.close-modal');
+        const modalLinks = document.querySelectorAll('.modal-link');
+
+        // 模态框内容定义
+        const modalContents = {
+            privacy: {
+                title: '隐私政策',
+                content: `
+                    <p>我们非常重视您的隐私保护。本隐私政策说明了我们如何收集、使用和保护您的个人信息。</p>
+                    <p><strong>信息收集：</strong>我们仅收集必要的个人信息来提供和改进我们的服务。</p>
+                    <p><strong>信息使用：</strong>您的信息将用于提供客户支持、发送重要通知和改进服务质量。</p>
+                    <p><strong>信息保护：</strong>我们采取严格的安全措施来保护您的个人信息不被未经授权的访问、使用或泄露。</p>
+                    <p><strong>Cookie使用：</strong>我们使用Cookie来改善用户体验和分析网站流量。</p>
+                `
+            },
+            terms: {
+                title: '使用条款',
+                content: `
+                    <p>欢迎使用PanTools软件。请仔细阅读以下使用条款：</p>
+                    <p><strong>软件许可：</strong>本软件授予您有限的、非独占的、不可转让的使用许可。</p>
+                    <p><strong>使用限制：</strong>您不得复制、修改、分发、出售或出租本软件的任何部分。</p>
+                    <p><strong>免责声明：</strong>本软件按"原样"提供，不提供任何明示或暗示的担保。</p>
+                    <p><strong>责任限制：</strong>在任何情况下，我们都不对因使用本软件而导致的任何损害承担责任。</p>
+                    <p><strong>条款修改：</strong>我们保留随时修改这些条款的权利，修改后的条款将在网站上公布。</p>
+                `
+            },
+            contact: {
+                title: '联系我们',
+                content: `
+                    <p>如果您有任何问题或建议，请通过以下方式联系我们：</p>
+                    <p><strong>客服邮箱：</strong>pantools@126.com</p>
+                    <p><strong>技术支持：</strong>pantools@126.com</p>
+                    <p><strong>商务合作：</strong>pantools@126.com</p>
+                    <p><strong>反馈建议：</strong>pantools@126.com</p>
+                    <p style="margin-top: 1rem;">我们会在24小时内回复您的邮件，感谢您的支持！</p>
+                `
+            }
+        };
+
+        // 打开模态框
+        function openModal(modalType) {
+            const content = modalContents[modalType];
+            if (content) {
+                modalTitle.textContent = content.title;
+                modalBody.innerHTML = content.content;
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // 关闭模态框
+        function closeModalFunc() {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // 绑定事件
+        modalLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const modalType = link.getAttribute('data-modal');
+                openModal(modalType);
+            });
+        });
+
+        closeModal.addEventListener('click', closeModalFunc);
+
+        // 点击模态框背景关闭
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModalFunc();
+            }
+        });
+
+        // ESC键关闭模态框
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.style.display === 'flex') {
+                closeModalFunc();
+            }
+        });
+
+        // 图片点击预览功能
+        const softwareScreenshot = document.getElementById('software-screenshot');
+        softwareScreenshot.addEventListener('click', () => {
+            // 创建模态框
+            const imgModal = document.createElement('div');
+            imgModal.style.position = 'fixed';
+            imgModal.style.top = '0';
+            imgModal.style.left = '0';
+            imgModal.style.width = '100%';
+            imgModal.style.height = '100%';
+            imgModal.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
+            imgModal.style.display = 'flex';
+            imgModal.style.justifyContent = 'center';
+            imgModal.style.alignItems = 'center';
+            imgModal.style.zIndex = '2000';
+            imgModal.style.cursor = 'pointer';
+            
+            // 创建放大图片
+            const enlargedImg = document.createElement('img');
+            enlargedImg.src = softwareScreenshot.src;
+            enlargedImg.alt = softwareScreenshot.alt;
+            enlargedImg.style.maxWidth = '90%';
+            enlargedImg.style.maxHeight = '90%';
+            enlargedImg.style.borderRadius = '10px';
+            enlargedImg.style.boxShadow = '0 0 50px rgba(79, 195, 247, 0.5)';
+            
+            imgModal.appendChild(enlargedImg);
+            document.body.appendChild(imgModal);
+            
+            // 点击关闭模态框
+            imgModal.addEventListener('click', () => {
+                document.body.removeChild(imgModal);
+            });
+            
+            // ESC键关闭模态框
+            document.addEventListener('keydown', function closeImgModal(e) {
+                if (e.key === 'Escape') {
+                    document.body.removeChild(imgModal);
+                    document.removeEventListener('keydown', closeImgModal);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
