@@ -1,0 +1,39 @@
+{
+  "apps": {
+    "pantools": {
+      "name": "PanTools",
+      "latest": "7.1",
+      "build": 710,
+      "size": "2.72 MB",
+      "md5": "4b7e2087b001c21fbe06e44923c27146",
+      "release_date": "2025-08-28",
+      "platform": "windows",
+      "min_os": "Windows 10",
+      "download_url": "https://pan.quark.cn/s/68a5277345d6",
+      "force_update": false,
+      "changelog": [
+        "修复监控判断重复逻辑",
+        "修复独立文件夹转存逻辑"
+      ]
+    },
+    "guangya": {
+      "name": "光鸭云盘批量转存分享工具",
+      "latest": "1.0.0",
+      "build": 100,
+      "size": "60 MB",
+      "md5": "",
+      "release_date": "2026-01-01",
+      "platform": ["windows", "macos"],
+      "download_url": {
+        "windows": "",
+        "macos": ""
+      },
+      "force_update": false,
+      "changelog": [
+        "首次发布"
+      ]
+    }
+  },
+  "updated_at": "2026-04-24T00:00:00Z",
+  "notice": ""
+}

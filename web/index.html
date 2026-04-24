@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>光鸭云盘批量转存分享工具 — 一站式云盘资源管理桌面端</title>
+<meta name="description" content="光鸭云盘批量转存、批量分享、文件裂变、秒传、资源监控、批量检测—— 一键完成。Windows & macOS 桌面应用免费下载。" />
+<link rel="icon" type="image/x-icon" href="favicon.ico" />
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="apple-touch-icon" href="logo.jpg" />
+<style>
+  /* ===========================================================
+     设计目标：暗色科技感落地页
+       · 深空蓝背景 + 青/紫双色霓虹光晕
+       · 网格底纹（CSS grid-lines）模拟电路板
+       · 玻璃拟态卡片（backdrop-filter: blur）
+       · 边缘发光按钮 + 光扫动画
+     所有样式内嵌，零依赖、零构建
+     =========================================================== */
+
+  :root {
+    --bg:        #05070e;
+    --bg-2:      #0a0e1a;
+    --panel:     rgba(18, 24, 40, 0.55);
+    --panel-br:  rgba(120, 180, 255, 0.12);
+    --text:      #e6ecff;
+    --muted:     #8a95b5;
+    --primary:   #38e2ff;       /* 青色霓虹 */
+    --accent:    #8a5bff;       /* 紫色霓虹 */
+    --danger:    #ff5f87;
+    --radius:    16px;
+    --maxw:      1180px;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--text);
+    background: var(--bg);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* 背景层 —— 叠加：渐变底色 + 光晕 + 网格线 */
+  body::before, body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+  }
+  /* 渐变光晕（青 + 紫，互相错开位置） */
+  body::before {
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 10%, rgba(56, 226, 255, 0.20), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 85% 25%, rgba(138, 91, 255, 0.18), transparent 60%),
+      radial-gradient(ellipse 80% 50% at 50% 100%, rgba(56, 226, 255, 0.10), transparent 60%),
+      linear-gradient(180deg, #05070e 0%, #080c18 100%);
+  }
+  /* 网格底纹 */
+  body::after {
+    background-image:
+      linear-gradient(rgba(120, 180, 255, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(120, 180, 255, 0.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 90% 80% at 50% 30%, #000 40%, transparent 90%);
+    -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 30%, #000 40%, transparent 90%);
+  }
+
+  /* 顶部导航 ---------------------------------------------------- */
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background: rgba(5, 7, 14, 0.6);
+    border-bottom: 1px solid var(--panel-br);
+  }
+  .nav {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+  .brand-logo {
+    width: 28px; height: 28px; border-radius: 7px;
+    object-fit: cover;
+    box-shadow: 0 0 14px rgba(56, 226, 255, 0.45), 0 0 0 1px rgba(120, 180, 255, 0.25);
+  }
+  .brand-name { font-size: 16px; letter-spacing: 0.5px; }
+  .nav-links { display: flex; gap: 24px; }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  /* Hero 区 ----------------------------------------------------- */
+  .hero {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 90px 28px 72px;
+    text-align: center;
+    position: relative;
+  }
+  .eyebrow {
+    display: inline-block;
+    padding: 6px 14px;
+    border: 1px solid var(--panel-br);
+    border-radius: 999px;
+    background: rgba(56, 226, 255, 0.08);
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: var(--primary);
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 22px;
+  }
+  .hero h1 {
+    font-size: 54px;
+    line-height: 1.1;
+    margin: 0 0 20px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    background: linear-gradient(92deg, #ffffff 0%, #bcd4ff 40%, var(--primary) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero .sub {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 680px;
+    margin: 0 auto 44px;
+  }
+  .hero .sub b { color: var(--text); font-weight: 600; }
+
+  /* 下载按钮 */
+  .download-row {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .btn {
+    --btn-bg: rgba(20, 28, 48, 0.75);
+    --btn-br: rgba(120, 180, 255, 0.25);
+    --btn-color: var(--text);
+    --btn-glow: transparent;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 28px;
+    border-radius: 12px;
+    border: 1px solid var(--btn-br);
+    background: var(--btn-bg);
+    color: var(--btn-color);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    min-width: 240px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.25s, border-color 0.25s;
+    overflow: hidden;
+  }
+  .btn:hover {
+    transform: translateY(-2px);
+    border-color: rgba(120, 180, 255, 0.55);
+    box-shadow: 0 10px 30px -10px var(--btn-glow), inset 0 0 0 1px rgba(120, 180, 255, 0.25);
+  }
+  .btn .icon {
+    width: 28px; height: 28px; flex-shrink: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .btn .icon svg { width: 100%; height: 100%; }
+  .btn-main {
+    --btn-bg: linear-gradient(135deg, #13a5c6 0%, #5b3dd6 100%);
+    --btn-br: rgba(56, 226, 255, 0.55);
+    --btn-glow: rgba(56, 226, 255, 0.5);
+  }
+  .btn-main::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(100deg, transparent 20%, rgba(255,255,255,0.25) 50%, transparent 80%);
+    transform: translateX(-100%);
+    transition: transform 0.8s;
+  }
+  .btn-main:hover::before { transform: translateX(100%); }
+  .btn .btn-title { font-size: 15px; line-height: 1.1; }
+  .btn .btn-sub   { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .btn-main .btn-sub { color: rgba(255,255,255,0.72); }
+
+  .meta {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 14px;
+  }
+  .meta span { padding: 0 8px; }
+
+  /* Hero 下方的"app 样机窗口" 装饰 */
+  .window {
+    margin: 60px auto 0;
+    max-width: 920px;
+    border-radius: 18px;
+    background: linear-gradient(180deg, rgba(18,24,40,0.9), rgba(10,14,26,0.9));
+    border: 1px solid var(--panel-br);
+    box-shadow: 0 30px 80px -20px rgba(0,0,0,0.7),
+                0 0 0 1px rgba(56, 226, 255, 0.08),
+                0 0 60px -10px rgba(56, 226, 255, 0.2);
+    overflow: hidden;
+    position: relative;
+  }
+  .window::after {
+    content: "";
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary), var(--accent), transparent);
+    opacity: 0.6;
+  }
+  .window-bar {
+    display: flex; align-items: center; gap: 6px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--panel-br);
+    background: rgba(10,14,26,0.7);
+  }
+  .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+  }
+  .dot.r { background: #ff5f56; }
+  .dot.y { background: #ffbd2e; }
+  .dot.g { background: #27c93f; }
+  .window-title {
+    margin-left: 14px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  /* 样机内容：左侧导航 + 右侧"统计" */
+  .window-body {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    min-height: 340px;
+  }
+  .mock-sidebar {
+    border-right: 1px solid var(--panel-br);
+    padding: 20px 10px;
+    background: rgba(6,9,18,0.45);
+  }
+  .mock-sidebar .item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 14px; border-radius: 8px;
+    font-size: 13px; color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .mock-sidebar .item.active {
+    color: var(--text);
+    background: rgba(56, 226, 255, 0.08);
+    box-shadow: inset 3px 0 0 var(--primary);
+  }
+  .mock-sidebar .item .dot2 {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: currentColor; opacity: 0.7;
+  }
+  .mock-content {
+    padding: 24px;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 18px;
+  }
+  .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .stat {
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: rgba(18,24,40,0.6);
+    border: 1px solid var(--panel-br);
+  }
+  .stat .k { font-size: 11px; color: var(--muted); }
+  .stat .v {
+    font-size: 22px; font-weight: 700; margin-top: 4px;
+    color: var(--text);
+  }
+  .stat .v .unit { font-size: 12px; color: var(--muted); margin-left: 3px; }
+  .chart {
+    border-radius: 12px;
+    border: 1px solid var(--panel-br);
+    background: rgba(18,24,40,0.4);
+    position: relative;
+    min-height: 180px;
+    overflow: hidden;
+  }
+  .chart svg { width: 100%; height: 100%; display: block; }
+
+  /* 特性网格 --------------------------------------------------- */
+  section.features {
+    max-width: var(--maxw);
+    margin: 140px auto 0;
+    padding: 0 28px;
+  }
+  .section-title {
+    text-align: center;
+    font-size: 36px;
+    font-weight: 800;
+    margin: 0 0 12px;
+    background: linear-gradient(92deg, #ffffff, #bcd4ff);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .section-sub {
+    text-align: center;
+    color: var(--muted);
+    font-size: 15px;
+    margin-bottom: 50px;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  .feature {
+    position: relative;
+    padding: 28px 24px 26px;
+    border-radius: var(--radius);
+    border: 1px solid var(--panel-br);
+    background: var(--panel);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    overflow: hidden;
+  }
+  .feature::before {
+    /* 卡片顶部的发光边 */
+    content: "";
+    position: absolute; top: 0; left: 30px; right: 30px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+  .feature:hover {
+    transform: translateY(-4px);
+    border-color: rgba(56, 226, 255, 0.35);
+    box-shadow: 0 20px 50px -20px rgba(56, 226, 255, 0.25);
+  }
+  .feature:hover::before { opacity: 1; }
+  .feature .f-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, rgba(56, 226, 255, 0.2), rgba(138, 91, 255, 0.2));
+    border: 1px solid rgba(120, 180, 255, 0.25);
+    margin-bottom: 14px;
+    color: var(--primary);
+  }
+  .feature .f-icon svg { width: 22px; height: 22px; }
+  .feature h3 { margin: 0 0 8px; font-size: 17px; font-weight: 700; }
+  .feature p  { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
+
+  /* 指标 bar -------------------------------------------------- */
+  .kpi-bar {
+    max-width: var(--maxw);
+    margin: 120px auto 0;
+    padding: 40px 28px;
+    border-top: 1px solid var(--panel-br);
+    border-bottom: 1px solid var(--panel-br);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    text-align: center;
+  }
+  .kpi .n {
+    font-size: 34px; font-weight: 800;
+    background: linear-gradient(92deg, #ffffff, var(--primary));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .kpi .l { color: var(--muted); font-size: 13px; margin-top: 4px; }
+
+  /* 系统要求 -------------------------------------------------- */
+  section.sys {
+    max-width: var(--maxw);
+    margin: 100px auto 0;
+    padding: 0 28px;
+  }
+  .sys-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .sys-card {
+    padding: 28px;
+    border-radius: var(--radius);
+    border: 1px solid var(--panel-br);
+    background: var(--panel);
+  }
+  .sys-card h4 {
+    margin: 0 0 16px;
+    font-size: 18px; font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sys-card h4 svg { width: 22px; height: 22px; color: var(--primary); }
+  .sys-card ul { margin: 0; padding: 0; list-style: none; }
+  .sys-card li {
+    color: var(--muted); font-size: 14px;
+    padding: 6px 0 6px 22px;
+    position: relative;
+  }
+  .sys-card li::before {
+    content: "";
+    position: absolute; left: 0; top: 12px;
+    width: 10px; height: 10px;
+    border: 1px solid var(--primary);
+    border-radius: 2px;
+    box-shadow: inset 0 0 0 2px rgba(56, 226, 255, 0.3);
+  }
+
+  /* Footer ---------------------------------------------------- */
+  footer {
+    margin-top: 120px;
+    padding: 40px 28px 30px;
+    border-top: 1px solid var(--panel-br);
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  footer .line1 { margin-bottom: 6px; }
+  footer a { color: var(--muted); text-decoration: none; }
+  footer a:hover { color: var(--primary); }
+
+  /* 响应式 ---------------------------------------------------- */
+  @media (max-width: 900px) {
+    .hero h1 { font-size: 38px; }
+    .hero .sub { font-size: 16px; }
+    .features-grid { grid-template-columns: 1fr 1fr; }
+    .kpi-bar { grid-template-columns: 1fr 1fr; gap: 20px; }
+    .stat-row { grid-template-columns: 1fr 1fr; }
+    .window-body { grid-template-columns: 1fr; }
+    .mock-sidebar { display: none; }
+    .sys-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .nav-links { display: none; }
+    .features-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 30px; }
+    .btn { min-width: 100%; }
+  }
+
+  /* 小浮动提示：占位下载按钮的"即将发布"toast */
+  .toast {
+    position: fixed;
+    bottom: 32px; left: 50%;
+    transform: translateX(-50%) translateY(120%);
+    padding: 12px 20px;
+    border-radius: 10px;
+    background: rgba(10,14,26,0.95);
+    border: 1px solid var(--panel-br);
+    color: var(--text);
+    font-size: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    transition: transform 0.35s;
+    z-index: 50;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- 顶部导航 ----------------------------------------------------- -->
+<header class="navbar">
+  <div class="nav">
+    <div class="brand">
+      <img class="brand-logo" src="logo.jpg" alt="光鸭云盘工具 logo" />
+      <span class="brand-name">光鸭云盘工具</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#features">功能</a>
+      <a href="#download">下载</a>
+      <a href="#sys">系统要求</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Hero --------------------------------------------------------- -->
+<section class="hero" id="download">
+  <span class="eyebrow">GUANGYA · DESKTOP SUITE</span>
+  <h1>让光鸭云盘的每一份<br/>资源都归你掌控</h1>
+  <p class="sub">
+    批量转存、批量分享、文件裂变、秒传、定时监控 ——
+    <b>原本要点几百次的事情，现在一键完成</b>。
+  </p>
+
+  <div class="download-row">
+    <!--
+      ↓ 下载链接暂为占位。发布真实包时，把 href 改成对应的下载地址：
+         · Windows: .exe / .msi / .zip
+         · macOS:   .dmg   / .pkg
+         并去掉 data-placeholder 属性，toast 就不会再弹出。
+    -->
+    <a class="btn btn-main" href="#" data-placeholder="Windows">
+      <span class="icon">
+        <!-- Windows 图标 -->
+        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 5.3 10.2 4.3v7H3zM11.2 4.2 21 3v8.3H11.2zM3 12.3h7.2v7L3 18.3zM11.2 12.3H21V21l-9.8-1.4z"/>
+        </svg>
+      </span>
+      <span>
+        <div class="btn-title">下载 Windows 版</div>
+        <div class="btn-sub">Windows 10 / 11 · 64-bit · ~60 MB</div>
+      </span>
+    </a>
+    <a class="btn" href="#" data-placeholder="macOS">
+      <span class="icon">
+        <!-- Apple 图标 -->
+        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16.365 1.43c.06 1.086-.356 2.17-1.004 2.95-.687.83-1.804 1.47-2.894 1.38-.08-1.06.426-2.17 1.08-2.87C14.22 2.1 15.375 1.52 16.365 1.43zM20.74 17.35c-.55 1.27-.82 1.84-1.54 2.97-1 1.56-2.42 3.51-4.18 3.52-1.56.01-1.96-1-4.08-.99-2.12.01-2.56.99-4.12.99-1.76-.01-3.1-1.78-4.1-3.34C.47 16.45-.1 11.42 1.74 8.85c1.3-1.83 3.35-2.9 5.28-2.9 1.96 0 3.2 1.08 4.82 1.08 1.57 0 2.53-1.08 4.8-1.08 1.73 0 3.55.94 4.85 2.56-4.26 2.33-3.56 8.43.25 8.84z"/>
+        </svg>
+      </span>
+      <span>
+        <div class="btn-title">下载 macOS 版</div>
+        <div class="btn-sub">macOS 12+ · Intel / Apple Silicon</div>
+      </span>
+    </a>
+  </div>
+  <div class="meta">
+    <span>✦ 免费使用</span><span>✦ 无需安装</span><span>✦ 本地数据库，隐私安全</span>
+  </div>
+
+  <!-- 样机窗口 ------------------------------------------------- -->
+  <div class="window" aria-hidden="true">
+    <div class="window-bar">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <span class="window-title">光鸭云盘批量转存分享工具 · v1.0</span>
+    </div>
+    <div class="window-body">
+      <aside class="mock-sidebar">
+        <div class="item active"><span class="dot2"></span>数据概览</div>
+        <div class="item"><span class="dot2"></span>批量转存</div>
+        <div class="item"><span class="dot2"></span>批量分享</div>
+        <div class="item"><span class="dot2"></span>分享记录</div>
+        <div class="item"><span class="dot2"></span>文件秒传</div>
+        <div class="item"><span class="dot2"></span>文件裂变</div>
+        <div class="item"><span class="dot2"></span>资源监控</div>
+        <div class="item"><span class="dot2"></span>系统设置</div>
+      </aside>
+      <div class="mock-content">
+        <div class="stat-row">
+          <div class="stat"><div class="k">今日转存</div><div class="v">1,248<span class="unit">个</span></div></div>
+          <div class="stat"><div class="k">今日分享</div><div class="v">96<span class="unit">条</span></div></div>
+          <div class="stat"><div class="k">总转存</div><div class="v">58.3<span class="unit">万</span></div></div>
+          <div class="stat"><div class="k">监控任务</div><div class="v">12<span class="unit">个</span></div></div>
+        </div>
+        <div class="chart">
+          <!-- 纯 SVG 手绘的示意折线，完全装饰用 -->
+          <svg viewBox="0 0 600 180" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="g1" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%"  stop-color="#38e2ff" stop-opacity="0.45"/>
+                <stop offset="100%" stop-color="#38e2ff" stop-opacity="0"/>
+              </linearGradient>
+              <linearGradient id="g2" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%"  stop-color="#8a5bff" stop-opacity="0.35"/>
+                <stop offset="100%" stop-color="#8a5bff" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <g stroke="rgba(120,180,255,0.08)" stroke-width="1">
+              <line x1="0" y1="45"  x2="600" y2="45" />
+              <line x1="0" y1="90"  x2="600" y2="90" />
+              <line x1="0" y1="135" x2="600" y2="135" />
+            </g>
+            <path d="M0,120 L60,100 L120,110 L180,80 L240,88 L300,60 L360,72 L420,48 L480,55 L540,28 L600,35 L600,180 L0,180 Z" fill="url(#g1)" />
+            <path d="M0,120 L60,100 L120,110 L180,80 L240,88 L300,60 L360,72 L420,48 L480,55 L540,28 L600,35"
+                  fill="none" stroke="#38e2ff" stroke-width="2" />
+            <path d="M0,145 L60,135 L120,138 L180,120 L240,128 L300,110 L360,115 L420,95 L480,100 L540,80 L600,85 L600,180 L0,180 Z" fill="url(#g2)" />
+            <path d="M0,145 L60,135 L120,138 L180,120 L240,128 L300,110 L360,115 L420,95 L480,100 L540,80 L600,85"
+                  fill="none" stroke="#8a5bff" stroke-width="2" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 特性 --------------------------------------------------------- -->
+<section class="features" id="features">
+  <h2 class="section-title">为高频操作者打造</h2>
+  <p class="section-sub">9 大核心功能，覆盖光鸭云盘的所有批量场景</p>
+
+  <div class="features-grid">
+
+    <div class="feature">
+      <div class="f-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 17l6-6 4 4 6-6"/><path d="M14 5h6v6"/>
+        </svg>
+      </div>
+      <h3>数据概览</h3>
+      <p>转存 / 分享 / 秒传 / 裂变总量 + 折线趋势，全盘运营一屏尽览。</p>
+    </div>
+
+    <div class="feature">
+      <div class="f-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 4h16v4H4zM4 10h16v4H4zM4 16h16v4H4z"/>
+        </svg>
+      </div>
+      <h3>批量转存</h3>
+      <p>一次粘贴几百条光鸭分享链接，按目录自动转存到指定文件夹，可选转存后再分享。</p>
+    </div>
+
+    <div class="feature">
+      <div class="f-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+          <path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/>
+        </svg>
+      </div>
+      <h3>批量分享</h3>
+      <p>选中任意文件/文件夹批量生成分享链接，默认密码和有效期统一管理。</p>
+    </div>
+
+    <div class="feature">
+      <div class="f-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="16" rx="2"/>
+          <path d="M3 10h18M8 4v16"/>
+        </svg>
+      </div>
+      <h3>分享记录</h3>
+      <p>所有分享历史持久化到本地，支持导出 Excel、按关键字检索、一键复制全部链接。</p>
+    </div>
+
+    <div class="feature">
+      <div class="f-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/>
+        </svg>
+      </div>
+      <h3>文件秒传</h3>
+      <p>通过 MD5 命中秒传通道，跨网盘迁移只走指针不走流量，大文件瞬间完成。</p>
+    </div>
+
+    <div class="feature">
+      <div class="f-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <circle cx="4" cy="6" r="2"/><circle cx="4" cy="18" r="2"/>
+          <circle cx="20" cy="6" r="2"/><circle cx="20" cy="18" r="2"/>
+          <path d="M6 6l4 4M6 18l4-4M18 6l-4 4M18 18l-4-4"/>
+        </svg>
+      </div>
+      <h3>文件裂变</h3>
+      <p>一个文件/目录按关键词列表批量克隆为 N 份独立分享，适合多渠道投放。</p>
+    </div>
+
+    <div class="feature">
+      <div class="f-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 6h16M4 12h10M4 18h16"/>
+          <circle cx="19" cy="12" r="2"/>
+        </svg>
+      </div>
+      <h3>资源管理</h3>
+      <p>导入跨网盘资源清单（光鸭 / 百度等），统一批量检测有效性与归档。</p>
+    </div>
+
+    <div class="feature">
+      <div class="f-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M12 7v5l3 2"/>
+        </svg>
+      </div>
+      <h3>资源监控</h3>
+      <p>给任意分享链接挂一个"定时哨兵"，源端一有新增文件就按原目录结构自动转存。</p>
+    </div>
+
+    <div class="feature">
+      <div class="f-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+        </svg>
+      </div>
+      <h3>系统设置</h3>
+      <p>转存/分享速率、广告文件、默认分享密码、通知绑定…… 全部按需定制。</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- KPI 条带 ----------------------------------------------------- -->
+<section class="kpi-bar">
+  <div class="kpi"><div class="n">9+</div><div class="l">核心功能模块</div></div>
+  <div class="kpi"><div class="n">100×</div><div class="l">比人工操作更快</div></div>
+  <div class="kpi"><div class="n">SQLite</div><div class="l">数据本地加密保存</div></div>
+  <div class="kpi"><div class="n">~60MB</div><div class="l">安装包·即下即用</div></div>
+</section>
+
+<!-- 系统要求 ----------------------------------------------------- -->
+<section class="sys" id="sys">
+  <h2 class="section-title">系统要求</h2>
+  <p class="section-sub">在你惯用的电脑上就能跑</p>
+
+  <div class="sys-grid">
+    <div class="sys-card">
+      <h4>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.3 10.2 4.3v7H3zM11.2 4.2 21 3v8.3H11.2zM3 12.3h7.2v7L3 18.3zM11.2 12.3H21V21l-9.8-1.4z"/></svg>
+        Windows
+      </h4>
+      <ul>
+        <li>Windows 10 / 11 · 64-bit</li>
+        <li>2 GB 内存以上</li>
+        <li>~120 MB 硬盘空间</li>
+        <li>稳定网络连接</li>
+      </ul>
+    </div>
+    <div class="sys-card">
+      <h4>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.365 1.43c.06 1.086-.356 2.17-1.004 2.95-.687.83-1.804 1.47-2.894 1.38-.08-1.06.426-2.17 1.08-2.87C14.22 2.1 15.375 1.52 16.365 1.43zM20.74 17.35c-.55 1.27-.82 1.84-1.54 2.97-1 1.56-2.42 3.51-4.18 3.52-1.56.01-1.96-1-4.08-.99-2.12.01-2.56.99-4.12.99-1.76-.01-3.1-1.78-4.1-3.34C.47 16.45-.1 11.42 1.74 8.85c1.3-1.83 3.35-2.9 5.28-2.9 1.96 0 3.2 1.08 4.82 1.08 1.57 0 2.53-1.08 4.8-1.08 1.73 0 3.55.94 4.85 2.56-4.26 2.33-3.56 8.43.25 8.84z"/></svg>
+        macOS
+      </h4>
+      <ul>
+        <li>macOS 12 Monterey 及更高</li>
+        <li>Intel 与 Apple Silicon 都支持</li>
+        <li>~150 MB 硬盘空间</li>
+        <li>首次打开可能需右键"打开"绕过公证</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Footer ------------------------------------------------------- -->
+<footer>
+  <div class="line1">© 2026 光鸭云盘工具 · 非官方 · 仅供个人自用</div>
+  <div>
+    <a href="#features">功能</a> ·
+    <a href="#download">下载</a> ·
+    <a href="#sys">系统要求</a>
+  </div>
+</footer>
+
+<!-- Toast（占位按钮点击提示） ------------------------------------ -->
+<div class="toast" id="toast">🚀 安装包打包中，即将上线，请稍候</div>
+
+<script>
+  /* 占位下载按钮：点击时弹 toast 告知"即将发布"
+     当真实下载链接就绪时：
+       1. 把 <a href="#"> 改成真实 URL
+       2. 删掉 data-placeholder 属性
+     这段脚本就会自动放行 */
+  (function () {
+    const toast = document.getElementById('toast');
+    let timer = null;
+    document.querySelectorAll('a[data-placeholder]').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        const platform = a.getAttribute('data-placeholder');
+        toast.textContent = `🚀 ${platform} 安装包打包中，即将上线`;
+        toast.classList.add('show');
+        clearTimeout(timer);
+        timer = setTimeout(() => toast.classList.remove('show'), 2200);
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
