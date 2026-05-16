@@ -175,11 +175,18 @@
   }
   .tool-icon {
     width: 56px; height: 56px; border-radius: 14px;
-    background: linear-gradient(135deg, var(--card-color, var(--primary)), var(--card-color-2, var(--accent)));
+    background: #fff;
     display: flex; align-items: center; justify-content: center;
-    color: #fff; font-size: 22px; font-weight: 800;
-    box-shadow: 0 8px 24px rgba(0,0,0,.35);
+    color: var(--card-color, var(--primary));
+    font-size: 22px; font-weight: 800;
+    box-shadow: 0 8px 24px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.1);
     margin-bottom: 18px;
+    overflow: hidden;
+  }
+  .tool-icon svg { width: 36px; height: 36px; display: block; }
+  .tool-icon.gradient {
+    background: linear-gradient(135deg, var(--card-color, var(--primary)), var(--card-color-2, var(--accent)));
+    color: #fff;
   }
   .tool-card h3 { margin: 0 0 6px; font-size: 19px; font-weight: 700; }
   .tool-card .tool-tag {
@@ -553,12 +560,61 @@
   // 年份
   document.getElementById('year').textContent = new Date().getFullYear();
 
+  // 各网盘品牌图标（SVG）
+  const ICON_GUANGYA = `
+    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-label="光鸭网盘">
+      <defs><linearGradient id="gy" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#FFD63A"/><stop offset="1" stop-color="#FFA726"/>
+      </linearGradient></defs>
+      <!-- 鸭子身体 -->
+      <ellipse cx="28" cy="40" rx="18" ry="14" fill="url(#gy)"/>
+      <!-- 头 -->
+      <circle cx="42" cy="24" r="12" fill="url(#gy)"/>
+      <!-- 嘴 -->
+      <path d="M50 22 q10 1 10 5 q0 4 -10 5 z" fill="#FF7043"/>
+      <!-- 眼睛 -->
+      <circle cx="44" cy="22" r="2.2" fill="#1a1a1a"/>
+      <circle cx="44.7" cy="21.3" r=".7" fill="#fff"/>
+    </svg>`;
+
+  const ICON_BAIDU = `
+    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-label="百度网盘">
+      <defs><linearGradient id="bd" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#3385FF"/><stop offset="1" stop-color="#1A5FE0"/>
+      </linearGradient></defs>
+      <!-- 云朵 -->
+      <path d="M16 44 q-8 0 -8 -7 q0 -6 6 -7 q1 -8 10 -8 q7 0 9 6 q2 -1 4 -1 q7 0 8 7 q6 1 6 7 q0 7 -8 7 z"
+            fill="url(#bd)"/>
+      <!-- 上箭头表示上传/网盘 -->
+      <path d="M30 42 l0 -10 l-5 0 l7 -8 l7 8 l-5 0 l0 10 z" fill="#fff"/>
+    </svg>`;
+
+  const ICON_QUARK = `
+    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-label="夸克网盘">
+      <defs><linearGradient id="qk" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#5B6CFF"/><stop offset="1" stop-color="#8A5BFF"/>
+      </linearGradient></defs>
+      <circle cx="32" cy="32" r="22" fill="url(#qk)"/>
+      <!-- Q 字母 -->
+      <circle cx="30" cy="30" r="11" fill="none" stroke="#fff" stroke-width="4"/>
+      <line x1="36" y1="36" x2="46" y2="46" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+    </svg>`;
+
+  const ICON_PANTOOLS = `
+    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-label="PanTools">
+      <defs><linearGradient id="pt" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#34D399"/><stop offset="1" stop-color="#10B981"/>
+      </linearGradient></defs>
+      <rect x="8" y="8" width="48" height="48" rx="12" fill="url(#pt)"/>
+      <text x="32" y="42" text-anchor="middle" font-family="Arial,sans-serif" font-size="28" font-weight="900" fill="#fff">P</text>
+    </svg>`;
+
   // 工具元数据：图标、配色、标语
   const TOOL_META = {
-    guangya: { letter: '光', tag: '光鸭网盘', color: '#38e2ff', color2: '#7af0ff', desc: '光鸭网盘批量转存 / 分享 / 裂变 / 监控' },
-    baidu:   { letter: '度', tag: '百度网盘', color: '#2b6cff', color2: '#5b8cff', desc: '百度网盘批量转存 / 分享 / 裂变 / 监控' },
-    quark:   { letter: '夸', tag: '夸克网盘', color: '#8a5bff', color2: '#b48bff', desc: '夸克网盘批量转存 / 分享 / 裂变 / 监控' },
-    pantools:{ letter: 'P', tag: 'PanTools 经典版', color: '#34d399', color2: '#6ee7b7', desc: 'PanTools 早期 Windows 版本' }
+    guangya: { icon: ICON_GUANGYA, tag: '光鸭网盘', color: '#FFB300', color2: '#FF9100', desc: '光鸭网盘批量转存 / 分享 / 裂变 / 监控' },
+    baidu:   { icon: ICON_BAIDU,   tag: '百度网盘', color: '#3385FF', color2: '#1A5FE0', desc: '百度网盘批量转存 / 分享 / 裂变 / 监控' },
+    quark:   { icon: ICON_QUARK,   tag: '夸克网盘', color: '#8A5BFF', color2: '#5B6CFF', desc: '夸克网盘批量转存 / 分享 / 裂变 / 监控' },
+    pantools:{ icon: ICON_PANTOOLS,tag: 'PanTools 经典版', color: '#34D399', color2: '#10B981', desc: 'PanTools 早期 Windows 版本' }
   };
 
   // 平台格式化
@@ -585,7 +641,7 @@
 
   // 渲染工具卡
   function renderToolCard(key, app) {
-    const meta = TOOL_META[key] || { letter: key[0].toUpperCase(), tag: app.name, color: '#38e2ff', color2: '#8a5bff', desc: app.name };
+    const meta = TOOL_META[key] || { icon: `<span style="font-size:22px;font-weight:800;color:#fff;">${escapeHtml(key[0].toUpperCase())}</span>`, tag: app.name, color: '#38e2ff', color2: '#8a5bff', desc: app.name };
     const plats = platforms(app);
     const btns = plats.map(p => {
       const url = downloadFor(app, p);
@@ -602,7 +658,7 @@
     return `
       <article class="tool-card" style="--card-color:${meta.color}; --card-color-2:${meta.color2};">
         <span class="free-pill">免费</span>
-        <div class="tool-icon">${meta.letter}</div>
+        <div class="tool-icon">${meta.icon}</div>
         <h3>${escapeHtml(app.name || meta.tag)}</h3>
         <div class="tool-tag">${escapeHtml(meta.desc)}</div>
         <div class="tool-meta">
