@@ -1,925 +1,682 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PanTools V7.0 - 专业工具解决方案</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Microsoft YaHei', Arial, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: #fff;
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* 头部样式 */
-        header {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 1rem 0;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #fff;
-            text-decoration: none;
-        }
-
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        .nav-menu a {
-            color: #fff;
-            text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-menu a:hover {
-            background: #fff;
-            color: #1e3c72;
-        }
-
-        /* 汉堡菜单按钮 */
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            cursor: pointer;
-            padding: 5px;
-        }
-
-        .hamburger span {
-            width: 25px;
-            height: 3px;
-            background: #fff;
-            margin: 3px 0;
-            transition: 0.3s;
-            border-radius: 2px;
-        }
-
-        /* 汉堡菜单激活状态 */
-        .hamburger.active span:nth-child(1) {
-            transform: rotate(-45deg) translate(-5px, 6px);
-        }
-
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .hamburger.active span:nth-child(3) {
-            transform: rotate(45deg) translate(-5px, -6px);
-        }
-
-        /* 主内容区域 */
-        .hero {
-            padding: 140px 0 80px;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-        }
-
-        .hero-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            align-items: center;
-        }
-
-        .software-image {
-            text-align: center;
-            max-width: 100%;
-        }
-
-        .software-image img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-
-        .software-info {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 2rem;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            max-width: 100%;
-        }
-
-        .software-info h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: #4fc3f7;
-        }
-
-        .info-item {
-            margin: 1rem 0;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .info-item:last-child {
-            border-bottom: none;
-        }
-
-        .download-btn {
-            display: inline-block;
-            background: #4fc3f7;
-            color: #fff;
-            padding: 12px 30px;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: bold;
-            transition: background 0.3s ease;
-            margin-top: 1rem;
-        }
-
-        .download-btn:hover {
-            background: #29b6f6;
-        }
-
-        /* 新增内容样式 */
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            color: #4fc3f7;
-        }
-
-        /* 功能区域样式 */
-        .features {
-            padding: 80px 0;
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-        }
-
-        .feature-card {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 2rem;
-            border-radius: 15px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            transition: transform 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .feature-card h3 {
-            color: #4fc3f7;
-            margin-bottom: 1rem;
-            font-size: 1.3rem;
-        }
-
-        /* 教程区域样式 */
-        .tutorials {
-            padding: 80px 0;
-        }
-
-        .tutorials-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .tutorial-card {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 2rem;
-            border-radius: 15px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-        }
-
-        .tutorial-card h3 {
-            color: #4fc3f7;
-            margin-bottom: 1rem;
-        }
-
-        .watch-btn {
-            display: inline-block;
-            background: #ff6b6b;
-            color: #fff;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 20px;
-            margin-top: 1rem;
-            transition: background 0.3s ease;
-        }
-
-        .watch-btn:hover {
-            background: #ff5252;
-        }
-
-        /* B站区域样式 */
-        .bilibili-section {
-            padding: 80px 0;
-            background: rgba(255, 255, 255, 0.05);
-            text-align: center;
-        }
-
-        .bilibili-content p {
-            margin-bottom: 2rem;
-            font-size: 1.2rem;
-        }
-
-        .bilibili-btn {
-            display: inline-block;
-            background: #00a1d6;
-            color: #fff;
-            padding: 12px 30px;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: bold;
-            transition: background 0.3s ease;
-        }
-
-        .bilibili-btn:hover {
-            background: #0092c4;
-        }
-
-        /* 赞助区域样式 */
-        .sponsor {
-            padding: 80px 0;
-            text-align: center;
-        }
-
-        .sponsor-content p {
-            margin-bottom: 2rem;
-            font-size: 1.2rem;
-        }
-
-        .sponsor-methods {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 3rem;
-            margin-top: 2rem;
-        }
-
-        .sponsor-method {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 2rem;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-        }
-
-        .sponsor-method h4 {
-            color: #4fc3f7;
-            margin-bottom: 1rem;
-        }
-
-        .sponsor-method img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-        }
-
-        /* 新版时间轴样式 - 基于用户提供的模板 */
-        .changelog {
-            padding: 80px 0;
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .timeline-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            max-height: 500px;
-            overflow-y: auto;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            position: relative;
-        }
-
-        .timeline-container:before {
-            content: '';
-            position: fixed;
-            top: 0px;
-            left: 50%;
-            bottom: 0px;
-            transform: translateX(-50%);
-            width: 6px;
-            background-color: #4fc3f7;
-            z-index: 1;
-        }
-
-        .entries {
-            width: calc(100% - 80px);
-            max-width: 800px;
-            margin: auto;
-            position: relative;
-            left: -5px;
-        }
-
-        .entry {
-            width: calc(50% - 80px);
-            float: left;
-            padding: 20px;
-            clear: both;
-            text-align: right;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            margin-bottom: 20px;
-            backdrop-filter: blur(10px);
-        }
-
-        .entry:not(:first-child) {
-            margin-top: -60px;
-        }
-
-        .title {
-            font-size: 1.2rem;
-            margin-bottom: 12px;
-            position: relative;
-            color: #4fc3f7;
-            font-weight: bold;
-            padding: 8px 12px;
-            background: rgba(79, 195, 247, 0.2);
-            border-radius: 6px;
-            display: inline-block;
-        }
-
-        .title:before {
-            content: '';
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            border: 4px solid #4fc3f7;
-            background-color: #1e3c72;
-            border-radius: 100%;
-            top: 50%;
-            transform: translateY(-50%);
-            right: -58px;
-            z-index: 1000;
-        }
-
-        .title.big:before {
-            width: 20px;
-            height: 20px;
-            transform: translate(8px, -50%);
-        }
-
-        .body {
-            color: #fff;
-        }
-
-        .body p {
-            line-height: 1.6em;
-            margin: 0.5rem 0;
-        }
-
-        .entry:nth-child(2n) {
-            text-align: left;
-            float: right;
-        }
-
-        .entry:nth-child(2n) .title:before {
-            left: -58px;
-            right: auto;
-        }
-
-        .entry:nth-child(2n) .title.big:before {
-            transform: translate(-8px, -50%);
-        }
-
-        /* 响应式设计 */
-        @media (max-width: 768px) {
-            .hero-content {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-            
-            .nav-menu {
-                position: fixed;
-                top: 70px;
-                left: -100%;
-                width: 100%;
-                background: rgba(30, 60, 114, 0.95);
-                backdrop-filter: blur(10px);
-                flex-direction: column;
-                padding: 2rem;
-                transition: left 0.3s ease;
-                gap: 1rem;
-            }
-
-            .nav-menu.active {
-                left: 0;
-            }
-
-            .nav-menu a {
-                padding: 12px 20px;
-                text-align: center;
-                border-radius: 25px;
-            }
-
-            .nav-menu a:hover {
-                background: #fff;
-                color: #1e3c72;
-            }
-
-            .hamburger {
-                display: flex;
-            }
-
-            .header-content {
-                flex-direction: row;
-                justify-content: space-between;
-            }
-
-            .section-title {
-                font-size: 2rem;
-            }
-
-            .features-grid,
-            .tutorials-grid,
-            .sponsor-methods {
-                grid-template-columns: 1fr;
-            }
-
-            .software-info,
-            .feature-card,
-            .tutorial-card,
-            .sponsor-method {
-                padding: 1.5rem;
-            }
-
-            .hero {
-                padding: 120px 0 60px;
-            }
-
-            /* 移动端时间轴样式 */
-            .timeline-container:before {
-                left: 20px;
-            }
-
-            .entries {
-                width: calc(100% - 40px);
-                left: 0;
-            }
-
-            .entry {
-                width: calc(100% - 60px);
-                float: none;
-                text-align: left;
-                margin: 0 0 20px 40px;
-            }
-
-            .entry:nth-child(2n) {
-                text-align: left;
-                float: none;
-                margin: 0 0 20px 40px;
-            }
-
-            .title:before {
-                left: -44px;
-                right: auto;
-            }
-
-            .entry:nth-child(2n) .title:before {
-                left: -44px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 0 15px;
-            }
-            
-            .nav-menu {
-                flex-direction: column;
-                align-items: center;
-                gap: 0.5rem;
-            }
-
-            .software-info h1 {
-                font-size: 2rem;
-            }
-
-            .section-title {
-                font-size: 1.8rem;
-            }
-
-            .entry {
-                width: calc(100% - 40px);
-                margin: 0 0 20px 20px;
-                padding: 15px;
-            }
-
-            .title:before {
-                left: -34px;
-            }
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PanTools 工具集 — 光鸭 / 百度 / 夸克 网盘批量转存分享工具，全部免费</title>
+<meta name="description" content="PanTools 工具集：光鸭、百度、夸克三大网盘的批量转存、批量分享、文件裂变、资源监控桌面工具，支持 Windows / macOS，永久免费。" />
+<link rel="icon" type="image/x-icon" href="guangya/favicon.ico" />
+<link rel="shortcut icon" href="guangya/favicon.ico" />
+<style>
+  :root {
+    --bg:        #05070e;
+    --bg-2:      #0a0e1a;
+    --panel:     rgba(18, 24, 40, 0.55);
+    --panel-2:   rgba(22, 30, 52, 0.7);
+    --panel-br:  rgba(120, 180, 255, 0.14);
+    --text:      #e6ecff;
+    --muted:     #8a95b5;
+    --primary:   #38e2ff;
+    --accent:    #8a5bff;
+    --green:     #34d399;
+    --orange:    #ffb259;
+    --pink:      #ff5f87;
+    --radius:    16px;
+    --maxw:      1200px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--text);
+    background: var(--bg);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before, body::after {
+    content: "";
+    position: fixed; inset: 0; z-index: -2; pointer-events: none;
+  }
+  body::before {
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 10%, rgba(56, 226, 255, 0.20), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 85% 25%, rgba(138, 91, 255, 0.18), transparent 60%),
+      radial-gradient(ellipse 80% 50% at 50% 100%, rgba(56, 226, 255, 0.10), transparent 60%),
+      linear-gradient(180deg, #05070e 0%, #080c18 100%);
+  }
+  body::after {
+    background-image:
+      linear-gradient(rgba(120, 180, 255, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(120, 180, 255, 0.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 90% 80% at 50% 30%, #000 40%, transparent 90%);
+    -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 30%, #000 40%, transparent 90%);
+  }
+  a { color: inherit; text-decoration: none; }
+
+  /* 导航 */
+  .navbar {
+    position: sticky; top: 0; z-index: 20;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    background: rgba(5, 7, 14, 0.65);
+    border-bottom: 1px solid var(--panel-br);
+  }
+  .nav {
+    max-width: var(--maxw); margin: 0 auto;
+    padding: 14px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+  .brand-logo {
+    width: 30px; height: 30px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    box-shadow: 0 0 14px rgba(56, 226, 255, 0.45);
+    display: flex; align-items: center; justify-content: center;
+    color: #05070e; font-weight: 900; font-size: 14px;
+  }
+  .brand-name { font-size: 17px; letter-spacing: 0.5px; }
+  .nav-links { display: flex; gap: 6px; }
+  .nav-links a {
+    padding: 8px 14px; border-radius: 999px;
+    color: var(--muted); font-size: 14px;
+    transition: all .25s ease;
+  }
+  .nav-links a:hover { color: var(--text); background: rgba(120, 180, 255, 0.08); }
+  .hamburger { display: none; width: 32px; height: 32px; border: 0; background: transparent; cursor: pointer; }
+  .hamburger span { display: block; width: 22px; height: 2px; background: var(--text); margin: 5px auto; transition: .3s; }
+  .hamburger.active span:nth-child(1){ transform: translateY(7px) rotate(45deg); }
+  .hamburger.active span:nth-child(2){ opacity: 0; }
+  .hamburger.active span:nth-child(3){ transform: translateY(-7px) rotate(-45deg); }
+
+  .container { max-width: var(--maxw); margin: 0 auto; padding: 0 28px; }
+
+  /* Hero */
+  .hero {
+    padding: 90px 0 60px;
+    text-align: center;
+    position: relative;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: 999px;
+    background: rgba(52, 211, 153, 0.12);
+    color: var(--green);
+    border: 1px solid rgba(52, 211, 153, 0.35);
+    font-size: 13px; font-weight: 600;
+    margin-bottom: 22px;
+  }
+  .badge::before { content: "●"; font-size: 10px; }
+  .hero h1 {
+    font-size: clamp(32px, 5vw, 54px);
+    line-height: 1.15; margin: 0 0 18px;
+    background: linear-gradient(135deg, #fff 0%, var(--primary) 50%, var(--accent) 100%);
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent;
+    font-weight: 800;
+  }
+  .hero p.lead {
+    color: var(--muted); font-size: 17px;
+    max-width: 760px; margin: 0 auto 30px;
+  }
+  .hero-stats {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 36px;
+    margin-top: 36px;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-size: 30px; font-weight: 800;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .stat-label { color: var(--muted); font-size: 13px; margin-top: 4px; }
+
+  /* 区块通用 */
+  section { padding: 60px 0; }
+  .section-head { text-align: center; margin-bottom: 44px; }
+  .section-head .eyebrow {
+    color: var(--primary); font-size: 13px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+  }
+  .section-head h2 {
+    font-size: clamp(26px, 3.5vw, 38px);
+    margin: 8px 0 10px; font-weight: 800;
+  }
+  .section-head p { color: var(--muted); max-width: 680px; margin: 0 auto; }
+
+  /* 工具卡片 */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+  }
+  .tool-card {
+    position: relative;
+    background: var(--panel);
+    border: 1px solid var(--panel-br);
+    border-radius: var(--radius);
+    padding: 28px;
+    backdrop-filter: blur(10px);
+    transition: all .3s ease;
+    overflow: hidden;
+  }
+  .tool-card::before {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--card-color, var(--primary)) 0%, transparent 60%);
+    opacity: .08; pointer-events: none;
+  }
+  .tool-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--card-color, var(--primary));
+    box-shadow: 0 20px 50px rgba(0,0,0,.4), 0 0 0 1px var(--card-color, var(--primary));
+  }
+  .tool-icon {
+    width: 56px; height: 56px; border-radius: 14px;
+    background: linear-gradient(135deg, var(--card-color, var(--primary)), var(--card-color-2, var(--accent)));
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 22px; font-weight: 800;
+    box-shadow: 0 8px 24px rgba(0,0,0,.35);
+    margin-bottom: 18px;
+  }
+  .tool-card h3 { margin: 0 0 6px; font-size: 19px; font-weight: 700; }
+  .tool-card .tool-tag {
+    color: var(--muted); font-size: 13px; margin-bottom: 16px;
+  }
+  .tool-meta {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px;
+    padding: 14px 0; margin: 4px 0 16px;
+    border-top: 1px dashed var(--panel-br);
+    border-bottom: 1px dashed var(--panel-br);
+    font-size: 13px;
+  }
+  .tool-meta .k { color: var(--muted); }
+  .tool-meta .v { color: var(--text); font-weight: 600; }
+  .tool-changelog {
+    font-size: 13px; color: var(--muted);
+    margin-bottom: 18px;
+  }
+  .tool-changelog ul { margin: 6px 0 0; padding-left: 18px; }
+  .tool-changelog li { margin: 2px 0; }
+  .tool-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 18px; border-radius: 10px;
+    font-size: 14px; font-weight: 600;
+    border: 1px solid transparent;
+    cursor: pointer; transition: all .25s ease;
+    flex: 1 1 auto; justify-content: center;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--card-color, var(--primary)), var(--card-color-2, var(--accent)));
+    color: #05070e;
+    box-shadow: 0 6px 18px rgba(56, 226, 255, .25);
+  }
+  .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.08); }
+  .btn-ghost {
+    background: rgba(120, 180, 255, .06);
+    color: var(--text);
+    border-color: var(--panel-br);
+  }
+  .btn-ghost:hover { background: rgba(120, 180, 255, .12); border-color: var(--card-color, var(--primary)); }
+  .btn-disabled {
+    background: rgba(120, 180, 255, .04);
+    color: var(--muted);
+    cursor: not-allowed; pointer-events: none;
+    border: 1px dashed var(--panel-br);
+  }
+  .btn .ico { width: 16px; height: 16px; }
+  .free-pill {
+    position: absolute; top: 16px; right: 16px;
+    padding: 4px 10px; border-radius: 999px;
+    background: rgba(52, 211, 153, .15);
+    color: var(--green);
+    border: 1px solid rgba(52, 211, 153, .4);
+    font-size: 11px; font-weight: 700; letter-spacing: .5px;
+  }
+
+  /* 功能特性 */
+  .features-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+  }
+  .feature {
+    background: var(--panel);
+    border: 1px solid var(--panel-br);
+    border-radius: var(--radius);
+    padding: 24px; backdrop-filter: blur(10px);
+    transition: all .3s ease;
+  }
+  .feature:hover { transform: translateY(-3px); border-color: var(--primary); }
+  .feature .ico-wrap {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: rgba(56, 226, 255, .12);
+    color: var(--primary);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 14px; font-size: 20px;
+  }
+  .feature h4 { margin: 0 0 6px; font-size: 16px; }
+  .feature p { color: var(--muted); font-size: 13.5px; margin: 0; }
+
+  /* 教程 / B站 / 赞助 */
+  .tutorials-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+  }
+  .tutorial-card {
+    background: var(--panel); border: 1px solid var(--panel-br);
+    border-radius: var(--radius); padding: 24px;
+    backdrop-filter: blur(10px);
+    transition: all .3s ease;
+  }
+  .tutorial-card:hover { transform: translateY(-3px); border-color: var(--accent); }
+  .tutorial-card h4 { margin: 0 0 8px; color: var(--primary); }
+  .tutorial-card p { color: var(--muted); font-size: 14px; margin: 0 0 16px; }
+  .watch-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: 999px;
+    background: linear-gradient(135deg, #ff5f87, #ff8a5b);
+    color: #fff; font-size: 13px; font-weight: 600;
+  }
+
+  .cta-band {
+    background: linear-gradient(135deg, rgba(56,226,255,.08), rgba(138,91,255,.08));
+    border: 1px solid var(--panel-br);
+    border-radius: 20px;
+    padding: 50px 30px; text-align: center;
+  }
+  .cta-band h3 { font-size: 26px; margin: 0 0 12px; }
+  .cta-band p { color: var(--muted); margin: 0 0 24px; }
+  .bili-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 26px; border-radius: 999px;
+    background: linear-gradient(135deg, #00a1d6, #38e2ff);
+    color: #05070e; font-weight: 700;
+  }
+
+  .sponsor-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px; max-width: 720px; margin: 0 auto;
+  }
+  .sponsor-card {
+    background: var(--panel); border: 1px solid var(--panel-br);
+    border-radius: var(--radius); padding: 22px; text-align: center;
+    backdrop-filter: blur(10px);
+  }
+  .sponsor-card h4 { margin: 0 0 14px; color: var(--primary); font-size: 15px; }
+  .sponsor-card img { max-width: 100%; border-radius: 10px; }
+
+  /* 时间线 */
+  .timeline {
+    max-width: 760px; margin: 0 auto;
+    position: relative;
+    max-height: 520px; overflow-y: auto;
+    padding: 10px 10px 10px 30px;
+  }
+  .timeline::-webkit-scrollbar { width: 6px; }
+  .timeline::-webkit-scrollbar-thumb { background: rgba(120,180,255,.2); border-radius: 3px; }
+  .timeline::before {
+    content: ""; position: absolute;
+    left: 14px; top: 0; bottom: 0; width: 2px;
+    background: linear-gradient(180deg, var(--primary), var(--accent));
+    opacity: .5;
+  }
+  .tl-item {
+    position: relative; margin-bottom: 22px;
+    padding: 16px 18px;
+    background: var(--panel); border: 1px solid var(--panel-br);
+    border-radius: 12px; backdrop-filter: blur(10px);
+  }
+  .tl-item::before {
+    content: ""; position: absolute;
+    left: -23px; top: 22px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--primary);
+    box-shadow: 0 0 0 4px rgba(56,226,255,.18);
+  }
+  .tl-date { color: var(--primary); font-weight: 700; font-size: 13px; margin-bottom: 6px; }
+  .tl-title { font-weight: 700; margin-bottom: 6px; }
+  .tl-body { color: var(--muted); font-size: 13.5px; }
+  .tl-body ul { margin: 4px 0 0; padding-left: 18px; }
+
+  footer {
+    border-top: 1px solid var(--panel-br);
+    padding: 36px 0; margin-top: 30px; text-align: center;
+    color: var(--muted); font-size: 13.5px;
+  }
+  footer a { color: var(--primary); margin: 0 8px; }
+
+  /* 加载/错误状态 */
+  .loading, .empty {
+    text-align: center; padding: 30px; color: var(--muted);
+  }
+
+  /* 响应式 */
+  @media (max-width: 820px) {
+    .nav-links { display: none; position: absolute; top: 60px; left: 0; right: 0;
+      flex-direction: column; padding: 16px 20px; gap: 4px;
+      background: rgba(5,7,14,.95); border-bottom: 1px solid var(--panel-br); }
+    .nav-links.active { display: flex; }
+    .hamburger { display: block; }
+  }
+  @media (max-width: 520px) {
+    .hero { padding: 60px 0 40px; }
+    section { padding: 44px 0; }
+    .container { padding: 0 18px; }
+    .tool-meta { grid-template-columns: 1fr; }
+  }
+</style>
 </head>
 <body>
-    <header>
-        <div class="container header-content">
-            <a href="#" class="logo">PanTools</a>
-            <nav>
-                <ul class="nav-menu">
-                    <li><a href="#home">主页</a></li>
-                    <li><a href="#features">软件功能</a></li>
-                    <li><a href="#guangya">光鸭网盘</a></li>
-                    <li><a href="#tutorials">视频教程</a></li>
-                    <li><a href="#bilibili">bilibili</a></li>
-                    <li><a href="#sponsor">赞助作者</a></li>
-                    <li><a href="#changelog">更新历史</a></li>
-                </ul>
-                <div class="hamburger">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            </nav>
-        </div>
-    </header>
 
-    <main>
-        <section class="hero" id="home">
-            <div class="container">
-                <div class="hero-content">
-                    <div class="software-image">
-                        <img src="index.jpg" alt="PanTools V7.0 软件界面" id="software-screenshot" style="cursor: pointer;">
-                    </div>
-                    <div class="software-info">
-                        <h1>PanTools V7.1</h1>
-                        <div class="info-item">
-                            <strong>软件名称：</strong>PanTools V7.1
-                        </div>
-                        <div class="info-item">
-                            <strong>文件大小：</strong>2.72 MB
-                        </div>
-                        <div class="info-item">
-                            <strong>MD5校验：</strong>4b7e2087b001c21fbe06e44923c27146
-                        </div>
-                        <div class="info-item">
-                            <strong>更新日期：</strong>2025-8-28
-                        </div>
-                        <div class="info-item">
-                            <strong>支持系统：</strong>Windows 10/11
-                        </div>
-                        <a href="https://pan.quark.cn/s/68a5277345d6" class="download-btn">立即下载</a>
-                    </div>
-                </div>
-            </div>
-        </section>
+<header class="navbar">
+  <div class="nav">
+    <a class="brand" href="#home">
+      <span class="brand-logo">P</span>
+      <span class="brand-name">PanTools 工具集</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#home">首页</a>
+      <a href="#tools">网盘工具</a>
+      <a href="#features">功能特性</a>
+      <a href="#legacy">PanTools</a>
+      <a href="#tutorials">视频教程</a>
+      <a href="#sponsor">赞助</a>
+      <a href="#changelog">更新日志</a>
+    </nav>
+    <button class="hamburger" id="hamburger" aria-label="menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
 
-        <!-- 软件功能区域 -->
-        <section class="features" id="features">
-            <div class="container">
-                <h2 class="section-title">软件功能特点</h2>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <h3>高效处理</h3>
-                        <p>支持批量处理，大幅提升工作效率，节省宝贵时间</p>
-                    </div>
-                    <div class="feature-card">
-                        <h3>智能分析</h3>
-                        <p>内置AI算法，自动识别和分析数据，提供智能建议</p>
-                    </div>
-                    <div class="feature-card">
-                        <h3>安全可靠</h3>
-                        <p>多重加密保护，确保数据安全，防止信息泄露</p>
-                    </div>
-                    <div class="feature-card">
-                        <h3>用户友好</h3>
-                        <p>简洁直观的界面设计，操作简单易上手</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 光鸭网盘工具区域 -->
-        <section class="features" id="guangya" style="background: rgba(56, 226, 255, 0.05);">
-            <div class="container">
-                <h2 class="section-title">光鸭网盘批量转存分享工具</h2>
-                <p style="text-align:center; opacity:0.85; margin-bottom:2rem;">
-                    批量转存、批量分享、文件裂变、秒传、定时监控 —— 原本要点几百次的事情，现在一键完成。
-                </p>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <h3>批量转存</h3>
-                        <p>一次粘贴几百条光鸭分享链接，按目录自动转存到指定文件夹。</p>
-                    </div>
-                    <div class="feature-card">
-                        <h3>批量分享</h3>
-                        <p>任意文件/文件夹批量生成分享链接，默认密码、有效期统一管理。</p>
-                    </div>
-                    <div class="feature-card">
-                        <h3>文件裂变</h3>
-                        <p>一个文件/目录按关键词列表批量克隆为 N 份独立分享，多渠道投放。</p>
-                    </div>
-                    <div class="feature-card">
-                        <h3>资源监控</h3>
-                        <p>给任意分享链接挂定时哨兵，源端新增文件自动按原目录结构转存。</p>
-                    </div>
-                </div>
-                <div style="text-align:center; margin-top:2.5rem;">
-                    <a href="guangya/index.html" class="download-btn" style="background:#38e2ff; color:#05070e;">查看详情 / 下载</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- 视频教程区域 -->
-        <section class="tutorials" id="tutorials">
-            <div class="container">
-                <h2 class="section-title">视频教程</h2>
-                <div class="tutorials-grid">
-                    <div class="tutorial-card">
-                        <h3>入门教程</h3>
-                        <p>快速上手，10分钟掌握基本操作</p>
-                        <a href="https://www.bilibili.com/video/BV1pCe2zuEQP/?vd_source=0f1b64197bc9e371757f24c6232b6626" class="watch-btn">观看视频</a>
-                    </div>
-                    <div class="tutorial-card">
-                        <h3>高级功能</h3>
-                        <p>深度解析软件的高级特性和技巧</p>
-                        <a href="https://www.bilibili.com/video/BV1PPeUzyEbr/" class="watch-btn">观看视频</a>
-                    </div>
-                    <div class="tutorial-card">
-                        <h3>实战案例</h3>
-                        <p>真实场景应用演示，解决实际问题</p>
-                        <a href="https://www.bilibili.com/video/BV13geSzbE8Z/" class="watch-btn">观看视频</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- B站链接区域 -->
-        <section class="bilibili-section" id="bilibili">
-            <div class="container">
-                <h2 class="section-title">B站频道</h2>
-                <div class="bilibili-content">
-                    <p>关注我们的B站频道，获取最新教程和更新动态</p>
-                    <a href="https://space.bilibili.com/365148057" class="bilibili-btn">前往B站</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- 赞助区域 -->
-        <section class="sponsor" id="sponsor">
-            <div class="container">
-                <h2 class="section-title">赞助作者</h2>
-                <div class="sponsor-content">
-                    <p>您的支持是我们持续更新的动力</p>
-                    <div class="sponsor-methods">
-                        <div class="sponsor-method">
-                            <h4>微信赞赏</h4>
-                            <img src="wx.jpg" alt="微信赞赏码">
-                        </div>
-                        <div class="sponsor-method">
-                            <h4>支付宝</h4>
-                            <img src="zfb.jpg" alt="支付宝收款码">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 更新历史区域 -->
-        <section class="changelog" id="changelog">
-            <div class="container">
-                <h2 class="section-title">更新历史</h2>
-                <div class="timeline-container">
-                    <div class="entries">
-                        <div class="entry">
-                            <div class="title">2025-8-26</div>
-                            <div class="body">
-                                <p>修复监控判断重复逻辑</p>
-                                <p>修复独立文件夹转存逻辑</p>
-                            </div>
-                        </div>
-                        <div class="entry">
-                            <div class="title big">2025-8-10</div>
-                            <div class="body">
-                                <p>PanTools V7.0 正式发布</p>
-                                <p>包含所有核心功能</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- 页脚区域 -->
-    <footer style="background: rgba(255, 255, 255, 0.1); padding: 2rem 0; text-align: center; backdrop-filter: blur(10px);">
-        <div class="container">
-            <div style="margin-bottom: 1rem;">
-                <a href="#" class="logo" style="font-size: 1.5rem;">PanTools</a>
-            </div>
-            <div style="margin-bottom: 1rem;">
-                <p style="color: #fff; opacity: 0.8;">专业工具解决方案 - 让工作更高效</p>
-            </div>
-            <div style="margin-bottom: 1rem;">
-                <a href="#" class="modal-link" data-modal="privacy" style="color: #4fc3f7; text-decoration: none; margin: 0 10px; cursor: pointer;">隐私政策</a>
-                <a href="#" class="modal-link" data-modal="terms" style="color: #4fc3f7; text-decoration: none; margin: 0 10px; cursor: pointer;">使用条款</a>
-                <a href="#" class="modal-link" data-modal="contact" style="color: #4fc3f7; text-decoration: none; margin: 0 10px; cursor: pointer;">联系我们</a>
-            </div>
-            <div>
-                <p style="color: #fff; opacity: 0.6; font-size: 0.9rem;">© 2025 PanTools. 保留所有权利。</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- 模态框结构 -->
-    <div id="modal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); z-index: 3000; justify-content: center; align-items: center;">
-        <div class="modal-content" style="background: rgba(30, 60, 114, 0.95); padding: 2rem; border-radius: 15px; max-width: 500px; width: 90%; backdrop-filter: blur(10px); position: relative;">
-            <span class="close-modal" style="position: absolute; top: 10px; right: 15px; font-size: 1.5rem; color: #fff; cursor: pointer; font-weight: bold;">&times;</span>
-            <h2 id="modal-title" style="color: #4fc3f7; margin-bottom: 1rem;"></h2>
-            <div id="modal-body" style="color: #fff; line-height: 1.6;"></div>
-        </div>
+<main>
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="container">
+      <span class="badge">所有工具永久免费 · 持续更新</span>
+      <h1>一站式网盘批量管理工具集</h1>
+      <p class="lead">
+        覆盖 <strong>光鸭、百度、夸克</strong> 三大主流网盘，提供批量转存、批量分享、文件裂变、资源监控等专业能力。
+        Windows / macOS 双端原生体验，全部 <strong style="color:var(--green)">永久免费</strong>。
+      </p>
+      <div class="tool-actions" style="justify-content:center; max-width:420px; margin:0 auto;">
+        <a href="#tools" class="btn btn-primary">立即下载</a>
+        <a href="#features" class="btn btn-ghost">了解功能</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-num" id="statTools">4</div><div class="stat-label">桌面工具</div></div>
+        <div class="stat"><div class="stat-num">2</div><div class="stat-label">系统平台</div></div>
+        <div class="stat"><div class="stat-num">100%</div><div class="stat-label">完全免费</div></div>
+        <div class="stat"><div class="stat-num">∞</div><div class="stat-label">批量处理</div></div>
+      </div>
     </div>
+  </section>
 
-    <script>
-        // 汉堡菜单功能
-        const hamburger = document.querySelector('.hamburger');
-        const navMenu = document.querySelector('.nav-menu');
+  <!-- 网盘工具 -->
+  <section id="tools">
+    <div class="container">
+      <div class="section-head">
+        <div class="eyebrow">Cloud Drive Tools</div>
+        <h2>三大网盘 · 桌面工具</h2>
+        <p>选择你常用的网盘，一键下载对应平台版本。所有版本号、文件大小、更新时间均从配置中实时读取。</p>
+      </div>
+      <div class="tools-grid" id="toolsGrid">
+        <div class="loading">正在加载工具信息…</div>
+      </div>
+    </div>
+  </section>
 
-        hamburger.addEventListener('click', () => {
-            hamburger.classList.toggle('active');
-            navMenu.classList.toggle('active');
+  <!-- 功能特性 -->
+  <section id="features">
+    <div class="container">
+      <div class="section-head">
+        <div class="eyebrow">Core Features</div>
+        <h2>为什么选择 PanTools 工具集</h2>
+        <p>原本要点几百次的事情，现在一键完成。专为内容运营、资源整理、网盘玩家打造。</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature"><div class="ico-wrap">⚡</div><h4>批量转存</h4><p>粘贴几百条分享链接，按目录自动转存到指定文件夹。</p></div>
+        <div class="feature"><div class="ico-wrap">🔗</div><h4>批量分享</h4><p>任意文件 / 文件夹批量生成分享链接，密码、有效期统一管理。</p></div>
+        <div class="feature"><div class="ico-wrap">🧬</div><h4>文件裂变</h4><p>一个目录按关键词列表克隆为 N 份独立分享，多渠道高效投放。</p></div>
+        <div class="feature"><div class="ico-wrap">🛰️</div><h4>资源监控</h4><p>给分享链接挂定时哨兵，源端新增文件自动按原结构转存。</p></div>
+        <div class="feature"><div class="ico-wrap">🚀</div><h4>秒传支持</h4><p>支持秒传/转存加速，海量资源处理依旧轻松不卡顿。</p></div>
+        <div class="feature"><div class="ico-wrap">🛡️</div><h4>本地运行</h4><p>纯客户端运行，账号 Cookie 仅保存本地，数据不上云。</p></div>
+        <div class="feature"><div class="ico-wrap">🖥️</div><h4>双平台原生</h4><p>Windows 与 macOS 双端原生打包，开箱即用。</p></div>
+        <div class="feature"><div class="ico-wrap">🆓</div><h4>永久免费</h4><p>所有工具不收费、不订阅、无广告，作者用爱发电。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PanTools 经典版 -->
+  <section id="legacy">
+    <div class="container">
+      <div class="section-head">
+        <div class="eyebrow">Classic Edition</div>
+        <h2>PanTools 经典版</h2>
+        <p>PanTools 早期 Windows 版本，老用户可继续使用。</p>
+      </div>
+      <div id="legacyCard"></div>
+    </div>
+  </section>
+
+  <!-- 视频教程 -->
+  <section id="tutorials">
+    <div class="container">
+      <div class="section-head">
+        <div class="eyebrow">Video Tutorials</div>
+        <h2>从入门到熟练 · 视频教程</h2>
+        <p>看视频跟着做，10 分钟上手所有工具。</p>
+      </div>
+      <div class="tutorials-grid">
+        <div class="tutorial-card">
+          <h4>入门教程</h4>
+          <p>快速上手，10 分钟掌握基本操作流程。</p>
+          <a class="watch-btn" target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1pCe2zuEQP/">▶ 观看视频</a>
+        </div>
+        <div class="tutorial-card">
+          <h4>高级功能</h4>
+          <p>批量分享、文件裂变、监控等高级用法。</p>
+          <a class="watch-btn" target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1PPeUzyEbr/">▶ 观看视频</a>
+        </div>
+        <div class="tutorial-card">
+          <h4>实战案例</h4>
+          <p>真实场景演示，解决日常资源整理痛点。</p>
+          <a class="watch-btn" target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV13geSzbE8Z/">▶ 观看视频</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- B 站 CTA -->
+  <section>
+    <div class="container">
+      <div class="cta-band">
+        <h3>关注 B 站，第一时间获取更新</h3>
+        <p>新版本、新功能、新玩法，全部在 B 站频道首发。</p>
+        <a class="bili-btn" target="_blank" rel="noopener" href="https://space.bilibili.com/365148057">前往 B 站频道 →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 赞助 -->
+  <section id="sponsor">
+    <div class="container">
+      <div class="section-head">
+        <div class="eyebrow">Support</div>
+        <h2>赞助作者</h2>
+        <p>所有工具均免费，如果它帮到了你，可以请作者喝杯咖啡，让更新更有动力。</p>
+      </div>
+      <div class="sponsor-grid">
+        <div class="sponsor-card"><h4>微信赞赏</h4><img src="wx.jpg" alt="微信赞赏码" /></div>
+        <div class="sponsor-card"><h4>支付宝</h4><img src="zfb.jpg" alt="支付宝收款码" /></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 更新日志（聚合 version.json 的 changelog） -->
+  <section id="changelog">
+    <div class="container">
+      <div class="section-head">
+        <div class="eyebrow">Changelog</div>
+        <h2>更新日志</h2>
+        <p>所有工具的最新版本与更新内容，自动从配置同步。</p>
+      </div>
+      <div class="timeline" id="timeline">
+        <div class="loading">正在加载更新日志…</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div style="margin-bottom:6px;"><strong>PanTools 工具集</strong> · 让网盘管理更高效</div>
+    <div>
+      <a href="mailto:pantools@126.com">联系邮箱</a> ·
+      <a href="https://space.bilibili.com/365148057" target="_blank" rel="noopener">B 站</a> ·
+      <a href="#tools">下载</a>
+    </div>
+    <div style="margin-top:10px; opacity:.6;">© <span id="year"></span> PanTools. 工具完全免费，仅供学习交流使用。</div>
+  </div>
+</footer>
+
+<script>
+  // 导航汉堡
+  const hb = document.getElementById('hamburger');
+  const nl = document.getElementById('navLinks');
+  hb.addEventListener('click', () => { hb.classList.toggle('active'); nl.classList.toggle('active'); });
+  nl.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { hb.classList.remove('active'); nl.classList.remove('active'); }));
+
+  // 年份
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // 工具元数据：图标、配色、标语
+  const TOOL_META = {
+    guangya: { letter: '光', tag: '光鸭网盘', color: '#38e2ff', color2: '#7af0ff', desc: '光鸭网盘批量转存 / 分享 / 裂变 / 监控' },
+    baidu:   { letter: '度', tag: '百度网盘', color: '#2b6cff', color2: '#5b8cff', desc: '百度网盘批量转存 / 分享 / 裂变 / 监控' },
+    quark:   { letter: '夸', tag: '夸克网盘', color: '#8a5bff', color2: '#b48bff', desc: '夸克网盘批量转存 / 分享 / 裂变 / 监控' },
+    pantools:{ letter: 'P', tag: 'PanTools 经典版', color: '#34d399', color2: '#6ee7b7', desc: 'PanTools 早期 Windows 版本' }
+  };
+
+  // 平台格式化
+  function platforms(app) {
+    const p = app.platform;
+    if (Array.isArray(p)) return p;
+    if (typeof p === 'string') return [p];
+    return [];
+  }
+
+  // 下载链接获取
+  function downloadFor(app, plat) {
+    const u = app.download_url;
+    if (!u) return '';
+    if (typeof u === 'string') return u;
+    return u[plat] || '';
+  }
+
+  const PLAT_LABEL = {
+    windows: { name: 'Windows', icon: '🪟' },
+    macos:   { name: 'macOS',   icon: '🍎' },
+    mac:     { name: 'macOS',   icon: '🍎' }
+  };
+
+  // 渲染工具卡
+  function renderToolCard(key, app) {
+    const meta = TOOL_META[key] || { letter: key[0].toUpperCase(), tag: app.name, color: '#38e2ff', color2: '#8a5bff', desc: app.name };
+    const plats = platforms(app);
+    const btns = plats.map(p => {
+      const url = downloadFor(app, p);
+      const lbl = PLAT_LABEL[p] || { name: p, icon: '⬇' };
+      if (url) {
+        return `<a class="btn btn-primary" href="${url}" target="_blank" rel="noopener">${lbl.icon} 下载 ${lbl.name}</a>`;
+      } else {
+        return `<span class="btn btn-disabled">${lbl.icon} ${lbl.name} 即将上线</span>`;
+      }
+    }).join('');
+
+    const changelog = (app.changelog || []).slice(0, 3).map(c => `<li>${escapeHtml(c)}</li>`).join('');
+
+    return `
+      <article class="tool-card" style="--card-color:${meta.color}; --card-color-2:${meta.color2};">
+        <span class="free-pill">免费</span>
+        <div class="tool-icon">${meta.letter}</div>
+        <h3>${escapeHtml(app.name || meta.tag)}</h3>
+        <div class="tool-tag">${escapeHtml(meta.desc)}</div>
+        <div class="tool-meta">
+          <span class="k">版本</span><span class="v">v${escapeHtml(app.latest || '-')}</span>
+          <span class="k">大小</span><span class="v">${escapeHtml(app.size || '-')}</span>
+          <span class="k">更新日期</span><span class="v">${escapeHtml(app.release_date || '-')}</span>
+          <span class="k">支持平台</span><span class="v">${plats.map(p => (PLAT_LABEL[p]?.name||p)).join(' / ') || '-'}</span>
+        </div>
+        ${changelog ? `<div class="tool-changelog"><strong style="color:${meta.color};">最新更新</strong><ul>${changelog}</ul></div>` : ''}
+        <div class="tool-actions">${btns || '<span class="btn btn-disabled">敬请期待</span>'}</div>
+      </article>
+    `;
+  }
+
+  function escapeHtml(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  // 加载 version.json
+  fetch('version.json?_=' + Date.now())
+    .then(r => r.json())
+    .then(data => {
+      const apps = data.apps || {};
+
+      // 三大网盘工具（按指定顺序）
+      const order = ['guangya', 'baidu', 'quark'];
+      const grid = document.getElementById('toolsGrid');
+      grid.innerHTML = order
+        .filter(k => apps[k])
+        .map(k => renderToolCard(k, apps[k]))
+        .join('') || '<div class="empty">暂无工具信息</div>';
+
+      // PanTools 经典版
+      const legacyEl = document.getElementById('legacyCard');
+      if (apps.pantools) {
+        legacyEl.innerHTML = `<div class="tools-grid" style="grid-template-columns: minmax(320px, 520px); justify-content:center;">${renderToolCard('pantools', apps.pantools)}</div>`;
+      } else {
+        legacyEl.innerHTML = '';
+      }
+
+      // 工具数量
+      const total = order.filter(k => apps[k]).length + (apps.pantools ? 1 : 0);
+      document.getElementById('statTools').textContent = total;
+
+      // 时间线 —— 聚合所有工具按日期降序
+      const items = [];
+      Object.entries(apps).forEach(([k, app]) => {
+        const meta = TOOL_META[k] || { tag: app.name, color: '#38e2ff' };
+        items.push({
+          date: app.release_date || '',
+          name: `${meta.tag || app.name} v${app.latest}`,
+          color: meta.color,
+          changes: app.changelog || []
         });
+      });
+      items.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 
-        // 点击菜单项后关闭菜单
-        document.querySelectorAll('.nav-menu a').forEach(link => {
-            link.addEventListener('click', () => {
-                hamburger.classList.remove('active');
-                navMenu.classList.remove('active');
-            });
-        });
-
-        // 点击页面其他区域关闭菜单
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.nav-menu') && !e.target.closest('.hamburger')) {
-                hamburger.classList.remove('active');
-                navMenu.classList.remove('active');
-            }
-        });
-
-        // 防止菜单点击事件冒泡
-        navMenu.addEventListener('click', (e) => {
-            e.stopPropagation();
-        });
-
-        // 页脚链接模态框功能
-        const modal = document.getElementById('modal');
-        const modalTitle = document.getElementById('modal-title');
-        const modalBody = document.getElementById('modal-body');
-        const closeModal = document.querySelector('.close-modal');
-        const modalLinks = document.querySelectorAll('.modal-link');
-
-        // 模态框内容定义
-        const modalContents = {
-            privacy: {
-                title: '隐私政策',
-                content: `
-                    <p>我们非常重视您的隐私保护。本隐私政策说明了我们如何收集、使用和保护您的个人信息。</p>
-                    <p><strong>信息收集：</strong>我们仅收集必要的个人信息来提供和改进我们的服务。</p>
-                    <p><strong>信息使用：</strong>您的信息将用于提供客户支持、发送重要通知和改进服务质量。</p>
-                    <p><strong>信息保护：</strong>我们采取严格的安全措施来保护您的个人信息不被未经授权的访问、使用或泄露。</p>
-                    <p><strong>Cookie使用：</strong>我们使用Cookie来改善用户体验和分析网站流量。</p>
-                `
-            },
-            terms: {
-                title: '使用条款',
-                content: `
-                    <p>欢迎使用PanTools软件。请仔细阅读以下使用条款：</p>
-                    <p><strong>软件许可：</strong>本软件授予您有限的、非独占的、不可转让的使用许可。</p>
-                    <p><strong>使用限制：</strong>您不得复制、修改、分发、出售或出租本软件的任何部分。</p>
-                    <p><strong>免责声明：</strong>本软件按"原样"提供，不提供任何明示或暗示的担保。</p>
-                    <p><strong>责任限制：</strong>在任何情况下，我们都不对因使用本软件而导致的任何损害承担责任。</p>
-                    <p><strong>条款修改：</strong>我们保留随时修改这些条款的权利，修改后的条款将在网站上公布。</p>
-                `
-            },
-            contact: {
-                title: '联系我们',
-                content: `
-                    <p>如果您有任何问题或建议，请通过以下方式联系我们：</p>
-                    <p><strong>客服邮箱：</strong>pantools@126.com</p>
-                    <p><strong>技术支持：</strong>pantools@126.com</p>
-                    <p><strong>商务合作：</strong>pantools@126.com</p>
-                    <p><strong>反馈建议：</strong>pantools@126.com</p>
-                    <p style="margin-top: 1rem;">我们会在24小时内回复您的邮件，感谢您的支持！</p>
-                `
-            }
-        };
-
-        // 打开模态框
-        function openModal(modalType) {
-            const content = modalContents[modalType];
-            if (content) {
-                modalTitle.textContent = content.title;
-                modalBody.innerHTML = content.content;
-                modal.style.display = 'flex';
-                document.body.style.overflow = 'hidden';
-            }
-        }
-
-        // 关闭模态框
-        function closeModalFunc() {
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-
-        // 绑定事件
-        modalLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const modalType = link.getAttribute('data-modal');
-                openModal(modalType);
-            });
-        });
-
-        closeModal.addEventListener('click', closeModalFunc);
-
-        // 点击模态框背景关闭
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                closeModalFunc();
-            }
-        });
-
-        // ESC键关闭模态框
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && modal.style.display === 'flex') {
-                closeModalFunc();
-            }
-        });
-
-        // 图片点击预览功能
-        const softwareScreenshot = document.getElementById('software-screenshot');
-        softwareScreenshot.addEventListener('click', () => {
-            // 创建模态框
-            const imgModal = document.createElement('div');
-            imgModal.style.position = 'fixed';
-            imgModal.style.top = '0';
-            imgModal.style.left = '0';
-            imgModal.style.width = '100%';
-            imgModal.style.height = '100%';
-            imgModal.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
-            imgModal.style.display = 'flex';
-            imgModal.style.justifyContent = 'center';
-            imgModal.style.alignItems = 'center';
-            imgModal.style.zIndex = '2000';
-            imgModal.style.cursor = 'pointer';
-            
-            // 创建放大图片
-            const enlargedImg = document.createElement('img');
-            enlargedImg.src = softwareScreenshot.src;
-            enlargedImg.alt = softwareScreenshot.alt;
-            enlargedImg.style.maxWidth = '90%';
-            enlargedImg.style.maxHeight = '90%';
-            enlargedImg.style.borderRadius = '10px';
-            enlargedImg.style.boxShadow = '0 0 50px rgba(79, 195, 247, 0.5)';
-            
-            imgModal.appendChild(enlargedImg);
-            document.body.appendChild(imgModal);
-            
-            // 点击关闭模态框
-            imgModal.addEventListener('click', () => {
-                document.body.removeChild(imgModal);
-            });
-            
-            // ESC键关闭模态框
-            document.addEventListener('keydown', function closeImgModal(e) {
-                if (e.key === 'Escape') {
-                    document.body.removeChild(imgModal);
-                    document.removeEventListener('keydown', closeImgModal);
-                }
-            });
-        });
-    </script>
+      const tl = document.getElementById('timeline');
+      tl.innerHTML = items.map(it => `
+        <div class="tl-item" style="border-color: ${it.color}33;">
+          <div class="tl-date" style="color:${it.color};">${escapeHtml(it.date || '未知日期')}</div>
+          <div class="tl-title">${escapeHtml(it.name)}</div>
+          <div class="tl-body">
+            ${it.changes.length ? `<ul>${it.changes.map(c => `<li>${escapeHtml(c)}</li>`).join('')}</ul>` : '<em>暂无变更说明</em>'}
+          </div>
+        </div>
+      `).join('') || '<div class="empty">暂无更新日志</div>';
+    })
+    .catch(err => {
+      console.error(err);
+      document.getElementById('toolsGrid').innerHTML =
+        '<div class="empty">加载工具信息失败：' + escapeHtml(err.message) + '<br><small>本页需通过 HTTP 服务访问（不能直接 file:// 打开）</small></div>';
+      document.getElementById('timeline').innerHTML = '<div class="empty">加载更新日志失败</div>';
+    });
+</script>
 </body>
 </html>
