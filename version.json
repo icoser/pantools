@@ -22,7 +22,7 @@
       "build": 100,
       "size": "60 MB",
       "md5": "",
-      "release_date": "2026-01-01",
+      "release_date": "2026-05-16",
       "platform": ["windows", "macos"],
       "download_url": {
         "windows": "",
@@ -31,9 +31,49 @@
       "force_update": false,
       "changelog": [
         "首次发布"
-      ]
+      ],
+      "author_info": "作者：xxx  公众号：xxx  QQ群：123456",
+      "show_author_info": false
+    },
+    "quark": {
+      "name": "夸克云盘批量转存分享工具",
+      "latest": "1.0.0",
+      "build": 100,
+      "size": "55 MB",
+      "md5": "",
+      "release_date": "2026-05-16",
+      "platform": ["windows", "macos"],
+      "download_url": {
+        "windows": "",
+        "macos": ""
+      },
+      "force_update": false,
+      "changelog": [
+        "首次发布"
+      ],
+      "author_info": "作者：xxx  公众号：xxx  QQ群：123456",
+      "show_author_info": false
+    },
+    "baidu": {
+      "name": "百度云盘批量转存分享工具",
+      "latest": "1.0.0",
+      "build": 100,
+      "size": "58 MB",
+      "md5": "",
+      "release_date": "2026-05-16",
+      "platform": ["windows", "macos"],
+      "download_url": {
+        "windows": "",
+        "macos": ""
+      },
+      "force_update": false,
+      "changelog": [
+        "首次发布"
+      ],
+      "author_info": "作者：xxx  公众号：xxx  QQ群：123456",
+      "show_author_info": false
     }
   },
-  "updated_at": "2026-04-24T00:00:00Z",
+  "updated_at": "2026-05-16T14:34:00+08:00",
   "notice": ""
 }
