@@ -26,7 +26,7 @@
       "platform": ["windows", "macos"],
       "download_url": {
         "windows": "https://pan.quark.cn/s/c4f9640d0d60",
-        "macos": ""
+        "macos": "https://pan.quark.cn/s/db338bf631dd"
       },
       "force_update": false,
       "changelog": [
@@ -45,7 +45,7 @@
       "platform": ["windows", "macos"],
       "download_url": {
         "windows": "https://pan.quark.cn/s/d741184dbb75",
-        "macos": ""
+        "macos": "https://pan.quark.cn/s/4147a0ef55be"
       },
       "force_update": false,
       "changelog": [
@@ -64,7 +64,7 @@
       "platform": ["windows", "macos"],
       "download_url": {
         "windows": "https://pan.quark.cn/s/7e5e5a126e37",
-        "macos": ""
+        "macos": "https://pan.quark.cn/s/2572cde55a76"
       },
       "force_update": false,
       "changelog": [
